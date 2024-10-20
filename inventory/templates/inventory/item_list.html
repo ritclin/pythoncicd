@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Items - Grid View</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #f0f8ff, #ffe4e1);
+            padding: 20px;
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #4B0082; /* Indigo */
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 2px solid #ff69b4; /* Hot Pink */
+            border-radius: 4px;
+            width: 250px;
+            margin-right: 10px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ffa500; /* Orange */
+            outline: none;
+        }
+
+        button {
+            padding: 10px 14px;
+            color: white;
+            background-color: #32cd32; /* Lime Green */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #228b22; /* Forest Green */
+        }
+
+        a {
+            display: inline-block;
+            margin: 10px;
+            color: #1e90ff; /* Dodger Blue */
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #ff4500; /* Orange Red */
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .item-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 218, 185, 0.8); /* Peach Puff */
+        }
+
+        .item-header {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .item-details {
+            margin-top: 10px;
+        }
+
+        .item-actions {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .item-actions a {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Inventory Tracker</h2>
+
+<form method="GET" action="{% url 'item_list' %}">
+    <input type="text" name="q" placeholder="Search..." value="{{ query|default:'' }}">
+    <button type="submit">Search</button>
+</form>
+
+<a href="{% url 'item_create' %}">Add New Item</a>
+<div class="total">
+    <h3>Total Inventory Value: ${{ total_inventory_value|floatformat:2 }}</h3>
+</div>
+
+<div class="grid-container">
+    {% for item in items %}
+        <div class="item-card">
+            <div class="item-header">
+                {{ forloop.counter }}. {{ item.name }}
+            </div>
+            <div class="item-details">
+                <p>Quantity: {{ item.quantity }}</p>
+                <p>Description: {{ item.description }}</p>
+                <p>Price: ${{ item.price|floatformat:2 }}</p>
+                <p>Total Value: ${{ item.total_value|floatformat:2 }}</p>
+            </div>
+            <div class="item-actions">
+                <a href="{% url 'item_update' item.pk %}">Edit</a> | 
+                <a href="{% url 'item_delete' item.pk %}">Delete</a>
+            </div>
+        </div>
+    {% empty %}
+        <p>No items found.</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>
